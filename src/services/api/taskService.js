@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { generateRecurringDates } from '@/utils/dateHelpers';
 
 // Import mock data
 import tasksData from '@/services/mockData/tasks.json';
@@ -100,7 +101,52 @@ class TaskService {
   async getDueToday() {
     await this.delay();
     const today = format(new Date(), 'yyyy-MM-dd');
-    return this.tasks.filter(t => t.dueDate === today);
+return this.tasks.filter(t => t.dueDate === today);
+  }
+
+  async createRecurringTasks(taskData, recurringConfig) {
+    await this.delay(300);
+    
+    // Generate all the dates for the recurring tasks
+    const dates = generateRecurringDates(
+      recurringConfig.startDate,
+      recurringConfig.endDate,
+      recurringConfig.interval,
+      recurringConfig.intervalCount
+    );
+
+    if (dates.length === 0) {
+      throw new Error('No valid dates generated for recurring task');
+    }
+
+    // Create tasks for each date
+    const createdTasks = [];
+    const baseId = Math.max(...this.tasks.map(t => t.Id), 0) + 1;
+
+    dates.forEach((date, index) => {
+      const newTask = {
+        Id: baseId + index,
+        title: taskData.title,
+        completed: false,
+        priority: taskData.priority || 'medium',
+        category: taskData.category || 'general',
+        dueDate: date,
+        createdAt: new Date().toISOString(),
+        completedAt: null,
+        isRecurring: true,
+        recurringConfig: {
+          interval: recurringConfig.interval,
+          intervalCount: recurringConfig.intervalCount,
+          originalStartDate: recurringConfig.startDate,
+          endDate: recurringConfig.endDate
+        }
+      };
+
+      this.tasks.unshift(newTask);
+      createdTasks.push({ ...newTask });
+    });
+
+    return createdTasks;
   }
 }
 

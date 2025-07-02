@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import Input from '@/components/atoms/Input';
-import Button from '@/components/atoms/Button';
-import ApperIcon from '@/components/ApperIcon';
-
-const TaskInput = ({ onAddTask, categories = [] }) => {
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import RecurringTaskModal from "@/components/molecules/RecurringTaskModal";
+import ApperIcon from "@/components/ApperIcon";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+const TaskInput = ({ onAddTask, onAddRecurringTask, categories = [] }) => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [priority, setPriority] = useState('medium');
   const [dueDate, setDueDate] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showRecurringModal, setShowRecurringModal] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,8 +40,27 @@ const TaskInput = ({ onAddTask, categories = [] }) => {
     setPriority('medium');
     setDueDate('');
     setIsExpanded(false);
-  };
+};
 
+  const handleRecurringTask = (recurringConfig) => {
+    if (!title.trim()) return;
+
+    const taskData = {
+      title: title.trim(),
+      category: category || 'general',
+      priority,
+      dueDate: dueDate || null
+    };
+
+    onAddRecurringTask(taskData, recurringConfig);
+    
+    setTitle('');
+    setCategory('');
+    setPriority('medium');
+    setDueDate('');
+    setIsExpanded(false);
+    setShowRecurringModal(false);
+  };
   return (
     <motion.div
       initial={false}
@@ -115,30 +135,51 @@ const TaskInput = ({ onAddTask, categories = [] }) => {
                 className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
-          </div>
+</div>
 
-          <div className="flex justify-end space-x-3">
+          <div className="flex justify-between items-center">
             <Button
               type="button"
-              variant="ghost"
-              onClick={handleCancel}
-              icon="X"
-              size="md"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              icon="Plus"
+              variant="outline"
+              onClick={() => setShowRecurringModal(true)}
+              icon="Repeat"
               size="md"
               disabled={!title.trim()}
             >
-              Add Task
+              Set Recurring
             </Button>
+            
+            <div className="flex space-x-3">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleCancel}
+                icon="X"
+                size="md"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                icon="Plus"
+                size="md"
+                disabled={!title.trim()}
+              >
+                Add Task
+              </Button>
+            </div>
           </div>
         </motion.div>
       </form>
+</form>
+      
+      <RecurringTaskModal
+        isOpen={showRecurringModal}
+        onClose={() => setShowRecurringModal(false)}
+        onConfirm={handleRecurringTask}
+        taskTitle={title}
+      />
     </motion.div>
   );
 };

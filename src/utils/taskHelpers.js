@@ -132,7 +132,7 @@ export const validateTask = (taskData) => {
     }
   }
 
-  if (taskData.priority && !['low', 'medium', 'high'].includes(taskData.priority)) {
+if (taskData.priority && !['low', 'medium', 'high'].includes(taskData.priority)) {
     errors.priority = 'Invalid priority level';
   }
 

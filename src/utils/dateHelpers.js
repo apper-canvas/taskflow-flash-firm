@@ -97,6 +97,80 @@ export const groupTasksByDate = (tasks) => {
     else if (status === 'upcoming') groups.upcoming.push(task);
     else groups.noDate.push(task);
   });
+return groups;
+};
 
-  return groups;
+// Recurring task utilities
+export const addDays = (date, days) => {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
+export const addWeeks = (date, weeks) => {
+  return addDays(date, weeks * 7);
+};
+
+export const addMonths = (date, months) => {
+  const result = new Date(date);
+  result.setMonth(result.getMonth() + months);
+  return result;
+};
+
+export const generateRecurringDates = (startDate, endDate, interval, intervalCount = 1) => {
+  const dates = [];
+  let currentDate = new Date(startDate);
+  const end = endDate ? new Date(endDate) : null;
+  
+  // Limit to prevent infinite loops (max 2 years of dates)
+  const maxDates = 730;
+  let count = 0;
+  
+  while (count < maxDates && (!end || currentDate <= end)) {
+    dates.push(format(currentDate, 'yyyy-MM-dd'));
+    
+    switch (interval) {
+      case 'daily':
+        currentDate = addDays(currentDate, intervalCount);
+        break;
+      case 'weekly':
+        currentDate = addWeeks(currentDate, intervalCount);
+        break;
+      case 'monthly':
+        currentDate = addMonths(currentDate, intervalCount);
+        break;
+      default:
+        return dates; // Invalid interval, return what we have
+    }
+    
+    count++;
+  }
+  
+  return dates;
+};
+
+export const formatRecurringPattern = (interval, intervalCount = 1) => {
+  if (intervalCount === 1) {
+    switch (interval) {
+      case 'daily':
+        return 'Daily';
+      case 'weekly':
+        return 'Weekly';
+      case 'monthly':
+        return 'Monthly';
+      default:
+        return 'Unknown';
+    }
+  }
+  
+  switch (interval) {
+    case 'daily':
+      return `Every ${intervalCount} days`;
+    case 'weekly':
+      return `Every ${intervalCount} weeks`;
+    case 'monthly':
+      return `Every ${intervalCount} months`;
+    default:
+      return 'Unknown';
+  }
 };

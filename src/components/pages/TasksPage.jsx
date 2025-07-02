@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { toast } from 'react-toastify';
-import TaskInput from '@/components/molecules/TaskInput';
-import FilterBar from '@/components/molecules/FilterBar';
-import TaskList from '@/components/organisms/TaskList';
-import taskService from '@/services/api/taskService';
-import categoryService from '@/services/api/categoryService';
+import React, { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
+import TaskList from "@/components/organisms/TaskList";
+import TaskInput from "@/components/molecules/TaskInput";
+import FilterBar from "@/components/molecules/FilterBar";
+import taskService from "@/services/api/taskService";
+import categoryService from "@/services/api/categoryService";
 
 const TasksPage = ({ searchQuery = '' }) => {
   const [tasks, setTasks] = useState([]);
@@ -100,8 +100,21 @@ const TasksPage = ({ searchQuery = '' }) => {
     } catch (err) {
       toast.error('Failed to delete task');
     }
-  };
+};
 
+  const handleAddRecurringTask = async (taskData, recurringConfig) => {
+    try {
+      const createdTasks = await taskService.createRecurringTasks(taskData, recurringConfig);
+      setTasks(prev => [...createdTasks, ...prev]);
+      toast.success(`Created ${createdTasks.length} recurring tasks!`);
+      
+      // Update category counts
+      const updatedCategories = await categoryService.getAll();
+      setCategories(updatedCategories);
+    } catch (err) {
+      toast.error('Failed to create recurring tasks');
+    }
+  };
   // Filter and search tasks
   const filteredTasks = useMemo(() => {
     let filtered = [...tasks];
@@ -185,14 +198,13 @@ const TasksPage = ({ searchQuery = '' }) => {
         taskCounts={taskCounts}
       />
       
-      <TaskList
+<TaskList
         tasks={filteredTasks}
         loading={loading}
         error={error}
         onToggleComplete={handleToggleComplete}
         onUpdateTask={handleUpdateTask}
         onDeleteTask={handleDeleteTask}
-        onRetry={loadData}
       />
     </div>
   );
