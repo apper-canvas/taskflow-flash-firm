@@ -77,6 +77,50 @@ export const useTasks = () => {
     addTask,
     updateTask,
     deleteTask,
-    toggleTaskComplete
+toggleTaskComplete,
+    addSubtask,
+    updateSubtask,
+    deleteSubtask,
+    toggleSubtask
+  };
+
+  const addSubtask = async (taskId, subtaskData) => {
+    try {
+      const updatedTask = await taskService.addSubtask(taskId, subtaskData);
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+      return updatedTask;
+    } catch (err) {
+      throw new Error(err.message || 'Failed to add subtask');
+    }
+  };
+
+  const updateSubtask = async (taskId, subtaskId, updates) => {
+    try {
+      const updatedTask = await taskService.updateSubtask(taskId, subtaskId, updates);
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+      return updatedTask;
+    } catch (err) {
+      throw new Error(err.message || 'Failed to update subtask');
+    }
+  };
+
+  const deleteSubtask = async (taskId, subtaskId) => {
+    try {
+      const updatedTask = await taskService.deleteSubtask(taskId, subtaskId);
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+      return updatedTask;
+    } catch (err) {
+      throw new Error(err.message || 'Failed to delete subtask');
+    }
+  };
+
+  const toggleSubtask = async (taskId, subtaskId) => {
+    try {
+      const updatedTask = await taskService.toggleSubtask(taskId, subtaskId);
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+      return updatedTask;
+    } catch (err) {
+      throw new Error(err.message || 'Failed to toggle subtask');
+    }
   };
 };

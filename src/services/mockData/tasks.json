@@ -5,9 +5,32 @@
     "completed": false,
     "priority": "high",
     "category": "work", 
-    "dueDate": "2024-01-15",
+"dueDate": "2024-01-15",
     "createdAt": "2024-01-10T09:00:00Z",
-    "completedAt": null
+    "completedAt": null,
+    "subtasks": [
+      {
+        "Id": 101,
+        "title": "Gather Q4 sales data",
+        "completed": true,
+        "createdAt": "2024-01-10T09:15:00Z",
+        "completedAt": "2024-01-11T10:30:00Z"
+      },
+      {
+        "Id": 102,
+        "title": "Analyze revenue trends", 
+        "completed": false,
+        "createdAt": "2024-01-10T09:16:00Z",
+        "completedAt": null
+      },
+      {
+        "Id": 103,
+        "title": "Prepare executive summary",
+        "completed": false,
+        "createdAt": "2024-01-10T09:17:00Z",
+        "completedAt": null
+      }
+    ]
   },
   {
     "Id": 2,
@@ -35,9 +58,32 @@
     "completed": false,
     "priority": "high",
     "category": "work",
-    "dueDate": "2024-01-14",
+"dueDate": "2024-01-14",
     "createdAt": "2024-01-08T16:45:00Z",
-    "completedAt": null
+    "completedAt": null,
+    "subtasks": [
+      {
+        "Id": 401,
+        "title": "Research market trends",
+        "completed": true,
+        "createdAt": "2024-01-08T17:00:00Z",
+        "completedAt": "2024-01-09T14:20:00Z"
+      },
+      {
+        "Id": 402,
+        "title": "Create slide deck",
+        "completed": false,
+        "createdAt": "2024-01-08T17:01:00Z",
+        "completedAt": null
+      },
+      {
+        "Id": 403,
+        "title": "Practice presentation",
+        "completed": false,
+        "createdAt": "2024-01-08T17:02:00Z",
+        "completedAt": null
+      }
+    ]
   },
   {
     "Id": 5,
@@ -65,9 +111,25 @@
     "completed": false,
     "priority": "low",
     "category": "personal",
-    "dueDate": null,
+"dueDate": null,
     "createdAt": "2024-01-05T11:10:00Z",
-    "completedAt": null
+    "completedAt": null,
+    "subtasks": [
+      {
+        "Id": 701,
+        "title": "Sort old items",
+        "completed": false,
+        "createdAt": "2024-01-05T11:15:00Z",
+        "completedAt": null
+      },
+      {
+        "Id": 702,
+        "title": "Deep clean floor",
+        "completed": false,
+        "createdAt": "2024-01-05T11:16:00Z",
+        "completedAt": null
+      }
+    ]
   },
   {
     "Id": 8,

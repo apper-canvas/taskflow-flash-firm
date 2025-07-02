@@ -235,3 +235,65 @@ export const getRecurringTaskPreview = (config) => {
 
 return preview;
 };
+
+export const calculateSubtaskProgress = (subtasks) => {
+  if (!subtasks || subtasks.length === 0) {
+    return { completed: 0, total: 0, percentage: 0 };
+  }
+  
+  const completed = subtasks.filter(subtask => subtask.completed).length;
+  const total = subtasks.length;
+  const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+  
+  return { completed, total, percentage };
+};
+
+export const validateSubtask = (subtaskData) => {
+  const errors = {};
+  
+  if (!subtaskData.title || !subtaskData.title.trim()) {
+    errors.title = 'Subtask title is required';
+  }
+  
+  if (subtaskData.title && subtaskData.title.length > 150) {
+    errors.title = 'Subtask title must be less than 150 characters';
+  }
+  
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+};
+
+export const getSubtaskStats = (tasks) => {
+  let totalSubtasks = 0;
+  let completedSubtasks = 0;
+  
+  tasks.forEach(task => {
+    if (task.subtasks && task.subtasks.length > 0) {
+      totalSubtasks += task.subtasks.length;
+      completedSubtasks += task.subtasks.filter(s => s.completed).length;
+    }
+  });
+  
+  const completionRate = totalSubtasks > 0 ? Math.round((completedSubtasks / totalSubtasks) * 100) : 0;
+  
+  return {
+    totalSubtasks,
+    completedSubtasks,
+    completionRate
+  };
+};
+
+export const updateTaskProgress = (task) => {
+  if (!task.subtasks || task.subtasks.length === 0) {
+    return task;
+  }
+  
+  const progress = calculateSubtaskProgress(task.subtasks);
+  return {
+    ...task,
+    progress: progress.percentage,
+    subtaskProgress: progress
+  };
+};

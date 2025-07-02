@@ -114,7 +114,54 @@ const TasksPage = ({ searchQuery = '' }) => {
     } catch (err) {
       toast.error('Failed to create recurring tasks');
     }
+};
+
+  const handleAddSubtask = async (taskId, subtaskData) => {
+    try {
+      const updatedTask = await taskService.addSubtask(taskId, subtaskData);
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+      toast.success('Subtask added successfully!');
+    } catch (err) {
+      toast.error('Failed to add subtask');
+    }
   };
+
+  const handleUpdateSubtask = async (taskId, subtaskId, updates) => {
+    try {
+      const updatedTask = await taskService.updateSubtask(taskId, subtaskId, updates);
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+      toast.success('Subtask updated successfully!');
+    } catch (err) {
+      toast.error('Failed to update subtask');
+    }
+  };
+
+  const handleDeleteSubtask = async (taskId, subtaskId) => {
+    try {
+      const updatedTask = await taskService.deleteSubtask(taskId, subtaskId);
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+      toast.success('Subtask deleted');
+    } catch (err) {
+      toast.error('Failed to delete subtask');
+    }
+  };
+
+  const handleToggleSubtask = async (taskId, subtaskId) => {
+    try {
+      const updatedTask = await taskService.toggleSubtask(taskId, subtaskId);
+      setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
+      
+      const subtask = updatedTask.subtasks?.find(s => s.Id === subtaskId);
+      if (subtask?.completed) {
+        toast.success('Subtask completed! 🎉');
+      } else {
+        toast.info('Subtask marked as incomplete');
+      }
+    } catch (err) {
+      toast.error('Failed to update subtask');
+    }
+  };
+
   // Filter and search tasks
   const filteredTasks = useMemo(() => {
     let filtered = [...tasks];
@@ -205,6 +252,10 @@ const TasksPage = ({ searchQuery = '' }) => {
         onToggleComplete={handleToggleComplete}
         onUpdateTask={handleUpdateTask}
         onDeleteTask={handleDeleteTask}
+        onAddSubtask={handleAddSubtask}
+        onUpdateSubtask={handleUpdateSubtask}
+        onDeleteSubtask={handleDeleteSubtask}
+        onToggleSubtask={handleToggleSubtask}
       />
     </div>
   );

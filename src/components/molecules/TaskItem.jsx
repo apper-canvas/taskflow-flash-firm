@@ -11,11 +11,20 @@ const TaskItem = ({
   task, 
   onToggleComplete, 
   onUpdateTask, 
-  onDeleteTask 
+  onDeleteTask,
+  onAddSubtask,
+  onUpdateSubtask,
+  onDeleteSubtask,
+  onToggleSubtask
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
+const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(task.title);
   const [showActions, setShowActions] = useState(false);
+  const [showSubtasks, setShowSubtasks] = useState(false);
+  const [isAddingSubtask, setIsAddingSubtask] = useState(false);
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
+  const [editingSubtaskId, setEditingSubtaskId] = useState(null);
+  const [editSubtaskTitle, setEditSubtaskTitle] = useState('');
 
   const handleToggleComplete = () => {
     onToggleComplete(task.id);
@@ -44,7 +53,57 @@ const TaskItem = ({
     } else if (e.key === 'Escape') {
       handleCancelEdit();
     }
+};
+
+  const handleAddSubtask = () => {
+    if (newSubtaskTitle.trim()) {
+      onAddSubtask(task.id, { title: newSubtaskTitle.trim() });
+      setNewSubtaskTitle('');
+      setIsAddingSubtask(false);
+    }
   };
+
+  const handleEditSubtask = (subtaskId, title) => {
+    setEditingSubtaskId(subtaskId);
+    setEditSubtaskTitle(title);
+  };
+
+  const handleSaveSubtask = (subtaskId) => {
+    if (editSubtaskTitle.trim()) {
+      onUpdateSubtask(task.id, subtaskId, { title: editSubtaskTitle.trim() });
+    }
+    setEditingSubtaskId(null);
+    setEditSubtaskTitle('');
+  };
+
+  const handleCancelSubtaskEdit = () => {
+    setEditingSubtaskId(null);
+    setEditSubtaskTitle('');
+  };
+
+  const handleSubtaskKeyPress = (e, subtaskId = null) => {
+    if (e.key === 'Enter') {
+      if (subtaskId) {
+        handleSaveSubtask(subtaskId);
+      } else {
+        handleAddSubtask();
+      }
+    } else if (e.key === 'Escape') {
+      if (subtaskId) {
+        handleCancelSubtaskEdit();
+      } else {
+        setIsAddingSubtask(false);
+        setNewSubtaskTitle('');
+      }
+    }
+  };
+
+  const subtasks = task.subtasks || [];
+  const subtaskProgress = subtasks.length > 0 ? {
+    completed: subtasks.filter(s => s.completed).length,
+    total: subtasks.length,
+    percentage: Math.round((subtasks.filter(s => s.completed).length / subtasks.length) * 100)
+  } : null;
 
   const isOverdue = task.dueDate && !task.completed && isPast(parseISO(task.dueDate)) && !isToday(parseISO(task.dueDate));
   const isDueToday = task.dueDate && isToday(parseISO(task.dueDate));
@@ -161,13 +220,182 @@ const TaskItem = ({
                       className="w-3 h-3" 
                     />
                     {isOverdue ? 'Overdue' : isDueToday ? 'Due today' : format(parseISO(task.dueDate), 'MMM d')}
+</div>
+                )}
+
+                {subtaskProgress && (
+                  <div className="mt-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">
+                        Progress: {subtaskProgress.completed}/{subtaskProgress.total}
+                      </span>
+                      <span className="text-sm font-medium text-gray-900">
+                        {subtaskProgress.percentage}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div 
+                        className="bg-primary-600 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${subtaskProgress.percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {subtasks.length > 0 && (
+                  <div className="mt-3">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setShowSubtasks(!showSubtasks)}
+                      icon={showSubtasks ? "ChevronUp" : "ChevronDown"}
+                      className="text-sm text-gray-600 hover:text-gray-800"
+                    >
+                      {showSubtasks ? 'Hide' : 'Show'} subtasks ({subtasks.length})
+                    </Button>
                   </div>
                 )}
               </div>
             </>
           )}
-        </div>
+</div>
       </div>
+
+      <AnimatePresence>
+        {showSubtasks && subtasks.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-4 pl-8 border-l-2 border-gray-100"
+          >
+            <div className="space-y-2">
+              {subtasks.map((subtask) => (
+                <div
+                  key={subtask.Id}
+                  className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg group hover:bg-gray-100 transition-colors"
+                >
+                  <Checkbox
+                    checked={subtask.completed}
+                    onChange={() => onToggleSubtask(task.id, subtask.Id)}
+                    size="sm"
+                  />
+                  
+                  {editingSubtaskId === subtask.Id ? (
+                    <div className="flex-1 flex items-center gap-2">
+                      <Input
+                        value={editSubtaskTitle}
+                        onChange={(e) => setEditSubtaskTitle(e.target.value)}
+                        onKeyDown={(e) => handleSubtaskKeyPress(e, subtask.Id)}
+                        onBlur={() => handleSaveSubtask(subtask.Id)}
+                        autoFocus
+                        className="text-sm"
+                      />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleSaveSubtask(subtask.Id)}
+                        icon="Check"
+                        className="text-green-600 hover:text-green-700"
+                      />
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={handleCancelSubtaskEdit}
+                        icon="X"
+                        className="text-gray-500 hover:text-gray-700"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <span 
+                        className={`flex-1 text-sm cursor-pointer ${
+                          subtask.completed ? 'line-through text-gray-500' : 'text-gray-900'
+                        }`}
+                        onClick={() => handleEditSubtask(subtask.Id, subtask.title)}
+                      >
+                        {subtask.title}
+                      </span>
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleEditSubtask(subtask.Id, subtask.title)}
+                          icon="Edit2"
+                          className="text-gray-400 hover:text-gray-600"
+                        />
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => onDeleteSubtask(task.id, subtask.Id)}
+                          icon="Trash2"
+                          className="text-gray-400 hover:text-red-600"
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
+
+              {isAddingSubtask ? (
+                <div className="flex items-center gap-2 p-2">
+                  <div className="w-4" /> {/* Spacer for checkbox alignment */}
+                  <Input
+                    value={newSubtaskTitle}
+                    onChange={(e) => setNewSubtaskTitle(e.target.value)}
+                    onKeyDown={handleSubtaskKeyPress}
+                    placeholder="Add subtask..."
+                    autoFocus
+                    className="text-sm"
+                  />
+                  <Button
+                    size="sm"
+                    variant="primary"
+                    onClick={handleAddSubtask}
+                    icon="Plus"
+                    disabled={!newSubtaskTitle.trim()}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      setIsAddingSubtask(false);
+                      setNewSubtaskTitle('');
+                    }}
+                    icon="X"
+                  />
+                </div>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setIsAddingSubtask(true)}
+                  icon="Plus"
+                  className="text-sm text-gray-600 hover:text-gray-800 ml-7"
+                >
+                  Add subtask
+                </Button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {!showSubtasks && subtasks.length === 0 && !isAddingSubtask && (
+        <div className="mt-3 pl-8">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setIsAddingSubtask(true)}
+            icon="Plus"
+            className="text-sm text-gray-600 hover:text-gray-800"
+          >
+            Add subtask
+          </Button>
+        </div>
+      )}
     </motion.div>
   );
 };

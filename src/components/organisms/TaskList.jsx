@@ -12,6 +12,10 @@ const TaskList = ({
   onToggleComplete, 
   onUpdateTask, 
   onDeleteTask,
+  onAddSubtask,
+  onUpdateSubtask,
+  onDeleteSubtask,
+  onToggleSubtask,
   onRetry 
 }) => {
   if (loading) {
@@ -63,11 +67,15 @@ const TaskList = ({
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             layout
           >
-            <TaskItem
+<TaskItem
               task={task}
               onToggleComplete={onToggleComplete}
               onUpdateTask={onUpdateTask}
               onDeleteTask={onDeleteTask}
+              onAddSubtask={onAddSubtask}
+              onUpdateSubtask={onUpdateSubtask}
+              onDeleteSubtask={onDeleteSubtask}
+              onToggleSubtask={onToggleSubtask}
             />
           </motion.div>
         ))}
