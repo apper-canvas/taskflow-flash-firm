@@ -59,13 +59,13 @@ export const sortTasks = (tasks, sortBy = 'priority') => {
       return a.completed ? 1 : -1;
     }
 
-    switch (sortBy) {
-      case 'priority':
+switch (sortBy) {
+      case 'priority': {
         const priorityOrder = { high: 3, medium: 2, low: 1 };
         const priorityDiff = (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0);
         if (priorityDiff !== 0) return priorityDiff;
         break;
-      
+      }
       case 'dueDate':
         if (a.dueDate && b.dueDate) {
           return new Date(a.dueDate) - new Date(b.dueDate);
