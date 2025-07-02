@@ -169,10 +169,9 @@ const TaskInput = ({ onAddTask, onAddRecurringTask, categories = [] }) => {
                 Add Task
               </Button>
             </div>
-          </div>
+</div>
         </motion.div>
       </form>
-</form>
       
       <RecurringTaskModal
         isOpen={showRecurringModal}
