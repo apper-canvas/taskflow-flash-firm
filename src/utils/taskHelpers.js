@@ -141,3 +141,97 @@ if (taskData.priority && !['low', 'medium', 'high'].includes(taskData.priority))
     errors
   };
 };
+export const validateRecurringTaskConfig = (config) => {
+  const errors = {};
+
+  // Validate interval
+  if (!config.interval || !['daily', 'weekly', 'monthly'].includes(config.interval)) {
+    errors.interval = 'Invalid interval type';
+  }
+
+  // Validate interval count
+  if (!config.intervalCount || config.intervalCount < 1 || config.intervalCount > 30) {
+    errors.intervalCount = 'Interval count must be between 1 and 30';
+  }
+
+  // Validate start date
+  if (!config.startDate) {
+    errors.startDate = 'Start date is required';
+  } else {
+    const startDate = new Date(config.startDate);
+    if (isNaN(startDate.getTime())) {
+      errors.startDate = 'Invalid start date';
+    }
+  }
+
+  // Validate end date if provided
+  if (config.endDate) {
+    const endDate = new Date(config.endDate);
+    const startDate = new Date(config.startDate);
+    
+    if (isNaN(endDate.getTime())) {
+      errors.endDate = 'Invalid end date';
+    } else if (startDate && endDate <= startDate) {
+      errors.endDate = 'End date must be after start date';
+    }
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+};
+
+export const getRecurringTaskPreview = (config) => {
+  if (!config.interval || !config.intervalCount || !config.startDate) {
+    return 'Invalid configuration';
+  }
+
+  const startDate = new Date(config.startDate);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  startDate.setHours(0, 0, 0, 0);
+
+  // Format interval text
+  let intervalText = '';
+  if (config.intervalCount === 1) {
+    intervalText = config.interval === 'daily' ? 'day' : 
+                   config.interval === 'weekly' ? 'week' : 'month';
+  } else {
+    intervalText = `${config.intervalCount} ${config.interval === 'daily' ? 'days' : 
+                    config.interval === 'weekly' ? 'weeks' : 'months'}`;
+  }
+
+  // Format start date
+  let startText = '';
+  if (startDate.getTime() === today.getTime()) {
+    startText = 'today';
+  } else if (startDate > today) {
+    startText = startDate.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  } else {
+    startText = startDate.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  }
+
+  let preview = `Every ${intervalText} starting ${startText}`;
+
+  // Add end date if specified
+  if (config.endDate) {
+    const endDate = new Date(config.endDate);
+    const endText = endDate.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+    preview += `, ending ${endText}`;
+  }
+
+return preview;
+};
