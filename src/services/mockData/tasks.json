@@ -1,0 +1,112 @@
+[
+  {
+    "Id": 1,
+    "title": "Review quarterly sales report",
+    "completed": false,
+    "priority": "high",
+    "category": "work", 
+    "dueDate": "2024-01-15",
+    "createdAt": "2024-01-10T09:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 2,
+    "title": "Schedule dentist appointment",
+    "completed": false,
+    "priority": "medium",
+    "category": "health",
+    "dueDate": "2024-01-20",
+    "createdAt": "2024-01-10T10:30:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 3,
+    "title": "Buy groceries for the week",
+    "completed": true,
+    "priority": "medium",
+    "category": "shopping",
+    "dueDate": "2024-01-12",
+    "createdAt": "2024-01-09T08:15:00Z",
+    "completedAt": "2024-01-12T14:30:00Z"
+  },
+  {
+    "Id": 4,
+    "title": "Prepare presentation for Monday meeting",
+    "completed": false,
+    "priority": "high",
+    "category": "work",
+    "dueDate": "2024-01-14",
+    "createdAt": "2024-01-08T16:45:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 5,
+    "title": "Call mom for birthday",
+    "completed": false,
+    "priority": "high",
+    "category": "personal",
+    "dueDate": "2024-01-13",
+    "createdAt": "2024-01-07T12:00:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 6,
+    "title": "Update investment portfolio",
+    "completed": false,
+    "priority": "low",
+    "category": "finance",
+    "dueDate": "2024-01-25",
+    "createdAt": "2024-01-06T14:20:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 7,
+    "title": "Clean garage",
+    "completed": false,
+    "priority": "low",
+    "category": "personal",
+    "dueDate": null,
+    "createdAt": "2024-01-05T11:10:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 8,
+    "title": "Submit expense reports",
+    "completed": true,
+    "priority": "medium",
+    "category": "work",
+    "dueDate": "2024-01-11",
+    "createdAt": "2024-01-04T13:30:00Z",
+    "completedAt": "2024-01-11T16:45:00Z"
+  },
+  {
+    "Id": 9,
+    "title": "Buy new running shoes",
+    "completed": false,
+    "priority": "medium",
+    "category": "shopping",
+    "dueDate": "2024-01-18",
+    "createdAt": "2024-01-03T09:45:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 10,
+    "title": "Book vacation hotel",
+    "completed": false,
+    "priority": "high",
+    "category": "personal",
+    "dueDate": "2024-01-16",
+    "createdAt": "2024-01-02T15:20:00Z",
+    "completedAt": null
+  },
+  {
+    "Id": 11,
+    "title": "Read monthly fitness magazine",
+    "completed": true,
+    "priority": "low",
+    "category": "health",
+    "dueDate": null,
+    "createdAt": "2024-01-01T10:00:00Z",
+    "completedAt": "2024-01-12T20:15:00Z"
+  }
+]
