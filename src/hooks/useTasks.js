@@ -65,26 +65,7 @@ export const useTasks = () => {
     }
   };
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  return {
-    tasks,
-    loading,
-    error,
-    loadTasks,
-    addTask,
-    updateTask,
-    deleteTask,
-toggleTaskComplete,
-    addSubtask,
-    updateSubtask,
-    deleteSubtask,
-    toggleSubtask
-  };
-
-  const addSubtask = async (taskId, subtaskData) => {
+const addSubtask = async (taskId, subtaskData) => {
     try {
       const updatedTask = await taskService.addSubtask(taskId, subtaskData);
       setTasks(prev => prev.map(t => t.id === taskId ? updatedTask : t));
@@ -122,5 +103,24 @@ toggleTaskComplete,
     } catch (err) {
       throw new Error(err.message || 'Failed to toggle subtask');
     }
+  };
+
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  return {
+    tasks,
+    loading,
+    error,
+    loadTasks,
+    addTask,
+    updateTask,
+    deleteTask,
+    toggleTaskComplete,
+    addSubtask,
+    updateSubtask,
+    deleteSubtask,
+    toggleSubtask
   };
 };
